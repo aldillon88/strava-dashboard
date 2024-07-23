@@ -12,25 +12,36 @@ if project_root not in sys.path:
 
 from backend import *
 
-st.set_page_config(layout='wide')
+#st.set_page_config(layout='wide')
 
 
 def main():
 
-	#Fetch access token
-	access_token = st.session_state['access_token']
+	st.set_page_config(layout="wide")
 
-	# Fetch activity ids
-	activities = get_strava_activities(access_token)
-	df = pd.DataFrame(activities)
-	activity_ids = df.id[:50]
+	if 'access_token' in st.session_state:
+
+		st.header("Your Heatmap", divider=True)
+
+		#Fetch access token
+		access_token = st.session_state['access_token']
+
+		# Fetch activity ids
+		activities = get_strava_activities(access_token)
+		df = pd.DataFrame(activities)
+		activity_ids = df.id[:50]
 
 
-	# Fetch streams
-	keys = 'latlng'
-	streams = get_multiple_streams(access_token, activity_ids, keys)
-	heatmap = plot_heatmap(streams)
-	st_folium(heatmap, width=900, height=700)
+		# Fetch streams
+		keys = 'latlng'
+		streams = get_multiple_streams(access_token, activity_ids, keys)
+		heatmap = plot_heatmap(streams)
+		st_folium(heatmap, width=900, height=700)
+
+	else:
+		auth_url = get_strava_auth_url(CLIENT_ID, REDIRECT_URI)
+		st.write("Please authenticate with Strava to proceed. Click the button below.")
+		st.link_button("Authenticate with Strava", auth_url)
 
 if __name__ == '__main__':
 	main()

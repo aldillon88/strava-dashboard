@@ -14,6 +14,8 @@ from backend import *
 
 def main():
 
+	st.set_page_config(layout="wide")
+
 	st.title('Welcome to your Strava Dashboard')
 
 	# First check if the user has authorized the app to connect to Strava
@@ -66,8 +68,9 @@ def main():
 			auth_url = get_strava_auth_url(CLIENT_ID, REDIRECT_URI)
 			st.write("## Step 1: Authenticate with Strava")
 			st.write("Click the button below to authenticate with Strava.")
-			if st.button("Authenticate with Strava"):
-				st.write("Please follow [this link]({}) to authenticate.".format(auth_url))
+			st.link_button("Authenticate with Strava", auth_url)
+			#if st.button("Authenticate with Strava"):
+			#	st.write("Please follow [this link]({}) to authenticate.".format(auth_url))
 
 		elif st.session_state['authorized'] == True:
 			access_token = st.session_state['access_token']
@@ -75,7 +78,7 @@ def main():
 			athlete = get_athlete_info(access_token)
 			athlete_name = athlete['firstname'] + ' ' + athlete['lastname']
 			first_seen = pd.to_datetime(athlete['created_at']).date()
-			st.divider()
+			st.subheader("Athlete profile", divider=True)
 			st.image(athlete['profile'])
 			st.write(f"**Athlete:**  {athlete_name}  \n**Member since:**  {first_seen}")
 			stats = get_athlete_stats(access_token, athlete_id)
@@ -87,6 +90,7 @@ def main():
 
 		else:
 			st.write('this session has not been authorized')
+			st.link_button("Authenticate with Strava", auth_url)
 
 
 

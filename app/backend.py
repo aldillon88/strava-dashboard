@@ -170,6 +170,7 @@ def get_athlete_stats(access_token, athlete_id):
 		return filtered_data
 
 
+@st.cache_data
 def get_strava_streams(access_token, activity_id, keys):
 	max_retries = 5  # Number of retries for rate limiting
 	retry_delay = 60  # Delay in seconds between retries
@@ -219,7 +220,7 @@ def get_multiple_streams(access_token, activity_ids, keys):
 	return streams
 
 
-#@st.cache_data
+@st.cache_resource
 def plot_heatmap(coordinates_list):
 	tiles = 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png'
 	attr = '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -317,18 +318,13 @@ def training_load_plot(df):
 	# Create a subplot figure with 2 rows, 1 column, shared x-axes, and custom titles
 	fig = make_subplots(rows=3, cols=1, shared_xaxes=True, vertical_spacing=0.05,
 						row_heights=[0.3, 0.3, 0.4])
-	
-	#fig.add_hrect(y0=5, y1=20, row=3, col=1, exclude_empty_subplots=True, annotation=None, line_width=0, fillcolor="blue", opacity=0.5) # Fresh
-	#fig.add_hrect(y0=-10, y1=5, row=3, col=1, exclude_empty_subplots=True, annotation=None, line_width=0, fillcolor="grey", opacity=0.5) # Grey zone    
-	#fig.add_hrect(y0=-10, y1=-30, row=3, col=1, exclude_empty_subplots=True, annotation=None, line_width=0, fillcolor="green", opacity=0.5) # Optimal
-	#fig.add_hrect(y0=-100, y1=-30, row=3, col=1, exclude_empty_subplots=True, annotation=None, line_width=0, fillcolor="red", opacity=0.5) # High risk
 
 	# Create traces for each data series
 	traces = [
-		go.Bar(x=df.index, y=df['tss'], name='TSS', visible=True),
+		go.Bar(x=df.index, y=df['tss'], name='Training Stress Score', visible=True),
 		go.Scatter(x=df.index, y=df['chronic_training_load'], name='Chronic Training Load', visible=True),
 		go.Scatter(x=df.index, y=df['acute_training_load'], name='Acute Training Load', visible=True),
-		go.Scatter(x=df.index, y=df['training_stress_balance'], name='Training Stress Balance', visible=True)
+		go.Scatter(x=df.index, y=df['training_stress_balance'], name='Training Stress Balance', visible=True, line=dict(color='white'))
 	]
 	
 	# Add traces to the appropriate subplots
@@ -355,7 +351,8 @@ def training_load_plot(df):
 		),
 		autosize=False,  # Disable auto-sizing
 		height=800,  # Set the height of the figure
-		width=1100  # Set the width of the figure
+		width=1100,  # Set the width of the figure
+		margin=dict(t=10, b=40, l=10, r=10)
 	)
 
 	
