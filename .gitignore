@@ -1,2 +1,4 @@
 notebooks/config.py
 requirements.in
+.DS_Store
+.streamlit/secrets.toml

@@ -25,16 +25,21 @@ from urllib.parse import urlencode, urlparse, parse_qs # Delete later
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Allow OAuth over HTTP for local testing (NOT recommended for production)
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+#os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 # Strava API endpoints
 AUTH_URL = "https://www.strava.com/oauth/authorize"
 TOKEN_URL = "https://www.strava.com/oauth/token"
 
-# Your app's Strava API details
-CLIENT_ID = os.getenv('CLIENT_ID')
-CLIENT_SECRET = os.getenv('CLIENT_SECRET')
-REDIRECT_URI = 'http://localhost:8501'  # This can be any valid URL for local testing
+# DEVELOPMENT / TESTING
+#CLIENT_ID = os.getenv('CLIENT_ID')
+#CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+#REDIRECT_URI = 'http://localhost:8501'  # This can be any valid URL for local testing
+
+# PRODUCTION
+CLIENT_ID = st.secrets['CLIENT_ID']
+CLIENT_SECRET = st.secrets['CLIENT_SECRET']
+REDIRECT_URI = 'https://my-strava-dashboard.streamlit.app'  # This can be any valid URL for local testing
 
 # Scope for the API access
 SCOPE = ["activity:read_all"]
