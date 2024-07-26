@@ -7,7 +7,7 @@ import urllib3
 import os
 import json
 
-from notebooks.config import *
+#from notebooks.config import *
 
 import pandas as pd
 from datetime import datetime
